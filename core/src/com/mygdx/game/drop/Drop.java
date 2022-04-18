@@ -12,26 +12,36 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+/**
+ * 雨漏りゲームのメインとなるクラス
+ * @author daisuke419
+ *
+ */
 public class Drop extends Game {
 
 	public SpriteBatch batch;
 	public BitmapFont smallFont;
-	public BitmapFont largeFont;
-	
+	public BitmapFont largeFont;	
 	public AssetManager assets;
+	public int score = 0;
 
 	/** 日本語を使用するため、フィールドに保持しておく */
-	FreeTypeFontGenerator generator;
+	private FreeTypeFontGenerator generator;
 	
+	/**
+	 * ゲーム作成時の処理
+	 */
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		assets = new AssetManager();
 
+		// 素材の読み込み
 		assets.load(Gdx.files.internal("droplet.png").path(), Texture.class);
 		assets.load(Gdx.files.internal("bucket.png").path(), Texture.class);
 		assets.load(Gdx.files.internal("bgimage.png").path(), Texture.class);
 		assets.load(Gdx.files.internal("drop.mp3").path(), Sound.class);
+		assets.load(Gdx.files.internal("game_over.mp3").path(), Sound.class);
 		assets.load(Gdx.files.internal("rain.mp3").path(), Music.class);
 		
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("ipaexg.ttf"));
@@ -52,10 +62,12 @@ public class Drop extends Game {
 		// 読み込み完了するまで待つ
 		assets.finishLoading();
 		
-		
 		this.setScreen(new MainMenuScreen(this));
 	}
 	
+	/**
+	 * ゲーム終了処理
+	 */
 	@Override
 	public void dispose () {
 		super.dispose();

@@ -6,14 +6,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+/**
+ * タイトル画面
+ * @author daisuke419
+ *
+ */
 public class MainMenuScreen implements Screen {
 
-	final Drop game;
+	private final Drop owner;
 	
-	OrthographicCamera camera;
+	private OrthographicCamera camera;
 	
 	public MainMenuScreen(Drop gam) {
-		game = gam;
+		owner = gam;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
@@ -21,59 +26,47 @@ public class MainMenuScreen implements Screen {
 	
 	@Override
 	public void show() {
-		// TODO 自動生成されたメソッド・スタブ
-
+		owner.score = 0;
 	}
 
 	@Override
 	public void render(float delta) {
 		
-		ScreenUtils.clear(0, 0, 0.5f, 1);
+		ScreenUtils.clear(0, 0, 0, 1);
 		
 		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
+		owner.batch.setProjectionMatrix(camera.combined);
 		
-		game.batch.begin();
-		game.largeFont.draw(game.batch, "雨漏りしちゃってる！？", 200, 400);
-		game.smallFont.draw(game.batch, "Tap anywhere or Z Key to begin!", 250, 150);
-		game.batch.end();
+		owner.batch.begin();
+		owner.largeFont.draw(owner.batch, "雨漏りしちゃってる！？", 200, 400);
+		owner.smallFont.draw(owner.batch, "Tap anywhere or Z Key to begin!", 250, 150);
+		owner.batch.end();
 		
 		if(Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.Z)) {
-			game.setScreen(new GameScreen(game));
+			owner.setScreen(new GameScreen(owner));
 			dispose();
 		}
 		
-
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 }

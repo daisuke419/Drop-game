@@ -16,9 +16,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * ゲームのメイン画面
+ * @author daisuke419
+ *
+ */
 public class GameScreen implements Screen {
 
-	final Drop game;
+	private final Drop owner;
 	
 	private Texture backgroundImage;
 	private Texture dropImage;
@@ -33,14 +38,12 @@ public class GameScreen implements Screen {
 	private Array<Rectangle> raindrops;
 	
 	private long lastDropTime;
-	
-	private int dropGathered;
-	
+		
 	private int hp = 5;
 	
 
 	public GameScreen(Drop gam) {
-		game = gam;
+		owner = gam;
 
 		// internal は assetsフォルダの参照
 		dropImage = gam.assets.get(Gdx.files.internal("droplet.png").path(), Texture.class);
@@ -75,7 +78,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		//ScreenUtils.clear(0, 0, 0, 1);
 		Gdx.gl.glClearColor(0, 0, 0.5f, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -107,31 +109,29 @@ public class GameScreen implements Screen {
 			 }
 			 
 			 if (raindrop.overlaps(bucket)) {
-				 dropGathered++;
+				 owner.score++;
 				 dropSound.play();
 				 iter.remove();
 			 }
 		 }
 
-		
 		if (TimeUtils.nanoTime() - lastDropTime > 1_000_000_000) spawnRaindrop();
 		
-		
 		// 描画
-		game.batch.setProjectionMatrix(camera.combined);
-		game.batch.begin();
-		game.batch.draw(backgroundImage, 0, 0);
-		game.smallFont.draw(game.batch, "Drop Collected ：" + dropGathered, 0, 480);
-		game.smallFont.draw(game.batch, "HP : " + hp, 0, 430);
-		game.batch.draw(bucketImage, bucket.x, bucket.y);
+		owner.batch.setProjectionMatrix(camera.combined);
+		owner.batch.begin();
+		owner.batch.draw(backgroundImage, 0, 0);
+		owner.smallFont.draw(owner.batch, "Drop Collected ：" + owner.score, 0, 470);
+		owner.smallFont.draw(owner.batch, "HP : " + hp, 0, 430);
+		owner.batch.draw(bucketImage, bucket.x, bucket.y);
 		for (Rectangle raindrop : raindrops) {
-			game.batch.draw(dropImage, raindrop.x, raindrop.y);
+			owner.batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
-		game.batch.end();
+		owner.batch.end();
 		
-		
+		// HPが０になったらゲームオーバー
 		if (hp < 1) {
-			game.setScreen(new GameOverScreen(game));
+			owner.setScreen(new GameOverScreen(owner));
 			dispose();
 		}
 
@@ -139,8 +139,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
@@ -162,14 +160,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-//		dropImage.dispose();
-//		bucketImage.dispose();
-//		dropSound.dispose();
-//		rainMusic.dispose();
-
 	}
-	
-	
+		
 	/**
 	 * 雨粒の発生
 	 */
